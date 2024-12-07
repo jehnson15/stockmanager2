@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            // ignore: deprecated_member_use
             icon: const FaIcon(FontAwesomeIcons.plusCircle),
             onPressed: () {
               Navigator.push(
@@ -61,13 +60,12 @@ class _HomePageState extends State<HomePage> {
               decoration: InputDecoration(
                 hintText: 'Buscar productos...',
                 prefixIcon: const FaIcon(
-                  FontAwesomeIcons.magnifyingGlass, // Ícono estilizado
+                  FontAwesomeIcons.magnifyingGlass,
                   color: Colors.blueGrey,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                // ignore: prefer_const_constructors
                 focusedBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(color: Colors.blueGrey, width: 2),
@@ -125,7 +123,14 @@ class _HomePageState extends State<HomePage> {
                       onDelete: () {
                         product.delete();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Producto eliminado.')),
+                          SnackBar(
+                            content: Text(
+                              'Producto "${product.name}" eliminado.',
+                              style: GoogleFonts.poppins(fontSize: 14),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            margin: const EdgeInsets.all(10),
+                          ),
                         );
                       },
                       onSell: (quantity) {
@@ -136,14 +141,20 @@ class _HomePageState extends State<HomePage> {
                             SnackBar(
                               content: Text(
                                 'Venta realizada: $quantity unidades de ${product.name}',
+                                style: GoogleFonts.poppins(fontSize: 14),
                               ),
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.all(10),
                             ),
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                  'Stock insuficiente para realizar la venta.'),
+                                'Stock insuficiente para realizar la venta.',
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.all(10),
                             ),
                           );
                         }
