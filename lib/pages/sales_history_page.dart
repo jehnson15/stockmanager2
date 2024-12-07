@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/sale.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Importar Font Awesome
 
 class SalesHistoryPage extends StatelessWidget {
   const SalesHistoryPage({Key? key}) : super(key: key);
@@ -13,8 +13,10 @@ class SalesHistoryPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Desactiva el ícono por defecto
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft,
+              color: Colors.white), // Ícono de Font Awesome
           onPressed: () {
             Navigator.pop(context); // Regresar a la pantalla anterior
           },
@@ -37,10 +39,14 @@ class SalesHistoryPage extends StatelessWidget {
             );
           }
 
+          // Ordenar las ventas por fecha (más recientes primero)
+          final sales = box.values.toList()
+            ..sort((a, b) => b.date.compareTo(a.date));
+
           return ListView.builder(
-            itemCount: box.length,
+            itemCount: sales.length,
             itemBuilder: (context, index) {
-              final sale = box.getAt(index)!;
+              final sale = sales[index];
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 shape: RoundedRectangleBorder(
@@ -62,7 +68,9 @@ class SalesHistoryPage extends StatelessWidget {
                       Text(
                         'Fecha: ${sale.date.day}/${sale.date.month}/${sale.date.year}',
                         style: GoogleFonts.lato(
-                            fontSize: 14, color: Colors.grey[700]),
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ],
                   ),
