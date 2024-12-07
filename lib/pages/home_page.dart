@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
 import 'add_product_page.dart';
+import 'sales_history_page.dart'; // Importa la nueva pantalla de historial de ventas
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,11 +22,22 @@ class HomePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
+            // ignore: deprecated_member_use
             icon: const FaIcon(FontAwesomeIcons.plusCircle),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const AddProductPage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.fileInvoice),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SalesHistoryPage()),
               );
             },
           ),

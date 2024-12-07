@@ -16,6 +16,12 @@ class AddProductPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // Regresar a la pantalla anterior
+          },
+        ),
         title: Text(
           'Agregar Producto',
           style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
@@ -28,17 +34,26 @@ class AddProductPage extends StatelessWidget {
           children: [
             _buildTextField(nameController, 'Nombre', FontAwesomeIcons.box),
             const SizedBox(height: 16),
-            _buildTextField(purchasePriceController, 'Precio de Compra',
-                FontAwesomeIcons.dollarSign,
-                keyboardType: TextInputType.number),
-            const SizedBox(height: 16),
-            _buildTextField(sellingPriceController, 'Precio de Venta',
-                FontAwesomeIcons.tags,
-                keyboardType: TextInputType.number),
+            _buildTextField(
+              purchasePriceController,
+              'Precio de Compra',
+              FontAwesomeIcons.dollarSign,
+              keyboardType: TextInputType.number,
+            ),
             const SizedBox(height: 16),
             _buildTextField(
-                stockController, 'Cantidad a Agregar', FontAwesomeIcons.plus,
-                keyboardType: TextInputType.number),
+              sellingPriceController,
+              'Precio de Venta',
+              FontAwesomeIcons.tags,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              stockController,
+              'Cantidad a Agregar',
+              FontAwesomeIcons.plus,
+              keyboardType: TextInputType.number,
+            ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
@@ -106,8 +121,11 @@ class AddProductPage extends StatelessWidget {
   }
 
   Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon,
-      {TextInputType? keyboardType}) {
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    TextInputType? keyboardType,
+  }) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,

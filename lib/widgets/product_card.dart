@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/product.dart';
+import '../models/sale.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -103,7 +105,19 @@ class ProductCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     final quantity = int.tryParse(quantityController.text) ?? 0;
-                    onSell(quantity);
+
+                    if (quantity <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('Por favor ingresa una cantidad válida.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    _registerSale(context, quantity);
+                    quantityController.clear();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueGrey,
@@ -133,9 +147,15 @@ class ProductCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: Text(
-            'Eliminar Producto',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          title: Row(
+            children: [
+              const FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
+              const SizedBox(width: 8),
+              Text(
+                'Eliminar Producto',
+                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           content: Text(
             '¿Estás seguro de que deseas eliminar "${product.name}"?',
@@ -167,6 +187,40 @@ class ProductCard extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  // Registrar la venta y actualizar el historial
+  void _registerSale(BuildContext context, int quantity) {
+    if (product.stock < quantity) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Stock insuficiente para realizar la venta.'),
+        ),
+      );
+      return;
+    }
+
+    // Reducir el stock
+    product.stock -= quantity;
+    product.save();
+
+    // Registrar la venta en la caja 'sales'
+    final salesBox = Hive.box<Sale>('sales');
+    final sale = Sale(
+      productName: product.name,
+      quantity: quantity,
+      totalPrice: product.sellingPrice * quantity,
+      date: DateTime.now(),
+    );
+    salesBox.add(sale);
+
+    // Mostrar mensaje de éxito
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content:
+            Text('Venta registrada: $quantity unidades de ${product.name}'),
+      ),
     );
   }
 }
